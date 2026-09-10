@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GoRide Demo</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f4f5f7;color:#171717}
+.app{max-width:430px;margin:auto;min-height:100vh;background:#fff}.top{padding:52px 20px 16px;font-size:25px;font-weight:800;border-bottom:1px solid #eee}
+.tabs{display:flex;padding:10px 14px;gap:8px;background:#fff;position:sticky;top:0;z-index:2}.tabs button{flex:1;border:0;padding:12px;border-radius:12px;background:#eee;font-weight:700}.tabs .on{background:#111;color:#fff}
+.map{margin:14px;height:290px;border-radius:20px;background:linear-gradient(135deg,#dfe8dc,#eef0e8);position:relative;overflow:hidden}
+.road{position:absolute;background:#fff;transform:rotate(-12deg);height:34px;width:130%;left:-20%;top:120px;box-shadow:0 0 0 2px #d9d9d9}.road.r2{transform:rotate(34deg);top:190px}.pin{position:absolute;left:50%;top:46%;font-size:35px;transform:translate(-50%,-50%)}.label{position:absolute;background:#fff;padding:7px 10px;border-radius:10px;box-shadow:0 2px 10px #0002;font-size:12px}
+.card{margin:14px;padding:16px;border:1px solid #e8e8e8;border-radius:18px;box-shadow:0 3px 15px #0000000b}.row{display:flex;justify-content:space-between;margin:10px 0}.muted{color:#777;font-size:13px}.big{font-size:20px;font-weight:800}.input{padding:14px;background:#f5f5f5;border-radius:12px;margin:8px 0}.btn{width:100%;border:0;border-radius:14px;padding:15px;background:#111;color:#fff;font-size:16px;font-weight:800;margin-top:8px}.green{background:#168447}.danger{background:#c62828}.hidden{display:none}.status{padding:12px;border-radius:12px;background:#edf8f1;color:#176b3b;font-weight:700;text-align:center}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="top">🚕 GoRide <span style="font-size:13px;color:#888">DEMO</span></div>
+<div class="tabs"><button id="tc" class="on" onclick="show('customer')">Khách</button><button id="td" onclick="show('driver')">Tài xế</button></div>
+
+<section id="customer">
+<div class="map"><div class="road"></div><div class="road r2"></div><div class="pin">📍</div><div class="label" style="left:14px;top:16px">Điểm đón: Vị trí hiện tại</div><div class="label" style="right:14px;bottom:16px">Điểm đến: Mỹ Đình</div></div>
+<div class="card">
+<div class="muted">Điểm đón</div><div class="input">📍 Vị trí hiện tại</div>
+<div class="muted">Điểm đến</div><div class="input">🏁 Nhập điểm đến</div>
+<div class="row"><span>GoCar</span><b>~ 85.000đ</b></div>
+<button class="btn green" onclick="book()">Đặt xe</button>
+</div>
+<div id="booking" class="card hidden"><div class="status">🔎 Đang tìm tài xế gần bạn...</div><div class="row"><span>Tài xế</span><b>Nguyễn Văn A</b></div><div class="row"><span>Xe</span><span>VinFast VF e34 • 29A-123.45</span></div><button class="btn danger" onclick="cancel()">Huỷ chuyến</button></div>
+</section>
+
+<section id="driver" class="hidden">
+<div class="card"><div class="row"><span>Trạng thái</span><b id="onlineText">Đang offline</b></div><button class="btn green" onclick="toggleOnline()">Bật nhận cuốc</button></div>
+<div class="map"><div class="road"></div><div class="road r2"></div><div class="pin">🚗</div><div class="label" style="left:14px;top:16px">Bạn đang ở gần đây</div></div>
+<div id="trip" class="card hidden"><div class="status">🔔 Có cuốc mới</div><div class="row"><span>Đón khách</span><b>Vị trí hiện tại</b></div><div class="row"><span>Đến</span><b>Mỹ Đình</b></div><div class="row"><span>Cước dự kiến</span><b>85.000đ</b></div><button class="btn green" onclick="accept()">Nhận cuốc</button></div>
+<div id="accepted" class="card hidden"><div class="status">Đã nhận chuyến</div><div class="row"><span>Trạng thái</span><b id="tripStatus">Đang đến đón</b></div><button class="btn" onclick="nextStatus()">Cập nhật trạng thái</button></div>
+</section>
+</div>
+<script>
+function show(x){customer.classList.toggle('hidden',x!=='customer');driver.classList.toggle('hidden',x!=='driver');tc.classList.toggle('on',x==='customer');td.classList.toggle('on',x==='driver')}
+function book(){booking.classList.remove('hidden'); localStorage.setItem('booked','1')}
+function cancel(){booking.classList.add('hidden');localStorage.removeItem('booked')}
+function toggleOnline(){onlineText.textContent='Đang online';trip.classList.remove('hidden')}
+function accept(){trip.classList.add('hidden');accepted.classList.remove('hidden')}
+let states=['Đang đến đón','Đã đón khách','Đang di chuyển','Hoàn thành chuyến'];let i=0;
+function nextStatus(){i++;tripStatus.textContent=states[Math.min(i,states.length-1)];if(i>=3)alert('Chuyến hoàn thành — thu nhập +85.000đ')}
+</script>
+</body>
+</html>
